@@ -11,7 +11,7 @@ typedef struct CGLine {
     CGPoint from;
     CGPoint to;
 } CGLine;
-const CGLine CGLineZero = {.from = {0, 0}, .to = {0, 0}};
+const CGLine CGLineZero = {{0, 0}, {0, 0}};
 @implementation UITableView (Wave)
 /**
  *  falls the rows
@@ -30,21 +30,38 @@ const CGLine CGLineZero = {.from = {0, 0}, .to = {0, 0}};
                          inOut:(UITableViewWaveInOut)inOut
                     completion:(void (^__nullable)(BOOL finished))completion {
     NSArray *array = [self indexPathsForVisibleRows];
-    CGLine line = CGLineZero;
 
     for (int i = 0; i < [array count]; i++) {
         NSIndexPath *path = [array objectAtIndex:i];
         UITableViewCell *cell = [self cellForRowAtIndexPath:path];
-        line = [self getAnimationLineWithOriginalPoint:cell.center Animation:animation inOut:inOut];
-        cell.center = line.from;
-        dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, .1 * (i + 1) * NSEC_PER_SEC);
+        CGFloat offsetX = CGRectGetMidX(self.frame);
+        CGPoint fromPoint = CGPointZero, toPoint = CGPointZero;
 
+        if (UITableViewWaveIn == inOut) {
+            // cell in
+            if (UITableViewWaveAnimationLeftToRight == animation) {
+                fromPoint = CGPointMake(-offsetX, cell.center.y);
+            } else {
+                fromPoint = CGPointMake(offsetX * 3, cell.center.y);
+            }
+            toPoint = CGPointMake(offsetX, cell.center.y);
+        } else {
+            // cell out
+            if (UITableViewWaveAnimationLeftToRight == animation) {
+                toPoint = CGPointMake(offsetX * 3, cell.center.y);
+            } else {
+                toPoint = CGPointMake(-offsetX, cell.center.y);
+            }
+            fromPoint = CGPointMake(offsetX, cell.center.y);
+        }
+        cell.center = fromPoint;
+        dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, .1 * (i + 1) * NSEC_PER_SEC);
         dispatch_after(time, dispatch_get_main_queue(), ^{
           [UIView animateWithDuration:0.3
               delay:0
               options:UIViewAnimationOptionCurveEaseOut
               animations:^{
-                cell.center = line.to;
+                cell.center = toPoint;
                 cell.hidden = NO;
               }
               completion:^(BOOL finished) {
@@ -57,60 +74,52 @@ const CGLine CGLineZero = {.from = {0, 0}, .to = {0, 0}};
         });
     }
 }
-/**
- *  get the line of animation
- *
- *  @param originalPoint
- *  @param animation
- *  @param inOut
- *
- *  @return line of animation
- */
 - (CGLine)getAnimationLineWithOriginalPoint:(CGPoint)originalPoint
                                   Animation:(UITableViewWaveAnimation)animation
                                       inOut:(UITableViewWaveInOut)inOut {
     CGLine line = CGLineZero;
-    CGFloat offsetX = CGRectGetWidth(self.frame);
-    CGFloat offsetY = CGRectGetHeight(self.frame);
+    CGFloat offsetX = CGRectGetMidX(self.frame);
+    CGPoint fromPoint = CGPointZero, toPoint = CGPointZero;
+
     if (UITableViewWaveIn == inOut) {
-        // cell in
-        line.to = CGPointMake(originalPoint.x, originalPoint.y);
         switch (animation) {
             case UITableViewWaveAnimationLeftToRight: {
-                line.from = CGPointMake(originalPoint.x - offsetX, originalPoint.y);
+                line.from = CGPointMake(-offsetX, originalPoint.y);
+                toPoint = CGPointMake(offsetX, originalPoint.y);
                 break;
             }
             case UITableViewWaveAnimationRightToLeft: {
-                line.from = CGPointMake(originalPoint.x + offsetX, originalPoint.y);
+                line.from = fromPoint = CGPointMake(offsetX * 3, originalPoint.y);
+                toPoint = CGPointMake(offsetX, originalPoint.y);
                 break;
             }
             case UITableViewWaveAnimationUpToDown: {
-                line.from = CGPointMake(originalPoint.x, originalPoint.y - offsetY);
+                //
                 break;
             }
             case UITableViewWaveAnimationDownToUp: {
-                line.from = CGPointMake(originalPoint.x, originalPoint.y + offsetY);
+                //
                 break;
             }
         }
     } else if (UITableViewWaveOut == inOut) {
-        // cell out
-        line.from = CGPointMake(originalPoint.x, originalPoint.y);
         switch (animation) {
             case UITableViewWaveAnimationLeftToRight: {
-                line.to = CGPointMake(originalPoint.x + offsetX, originalPoint.y);
+                line.to = toPoint = CGPointMake(offsetX * 3, originalPoint.y);
+                fromPoint = CGPointMake(offsetX, originalPoint.y);
                 break;
             }
             case UITableViewWaveAnimationRightToLeft: {
-                line.to = CGPointMake(originalPoint.x - offsetX, originalPoint.y);
+                line.to = CGPointMake(-offsetX, originalPoint.y);
+                fromPoint = CGPointMake(offsetX, originalPoint.y);
                 break;
             }
             case UITableViewWaveAnimationUpToDown: {
-                line.to = CGPointMake(originalPoint.x, originalPoint.y + offsetY);
+                //
                 break;
             }
             case UITableViewWaveAnimationDownToUp: {
-                line.to = CGPointMake(originalPoint.x, originalPoint.y - offsetY);
+                //
                 break;
             }
         }

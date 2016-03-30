@@ -10,7 +10,9 @@
 
 typedef NS_ENUM(NSInteger, UITableViewWaveAnimation) {
   UITableViewWaveAnimationLeftToRight,
-  UITableViewWaveAnimationRightToLeft
+  UITableViewWaveAnimationRightToLeft,
+  UITableViewWaveAnimationUpToDown,
+  UITableViewWaveAnimationDownToUp
 };
 typedef NS_ENUM(NSInteger, UITableViewWaveInOut) {
   UITableViewWaveIn,

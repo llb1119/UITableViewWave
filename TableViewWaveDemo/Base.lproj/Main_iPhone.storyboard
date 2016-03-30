@@ -34,14 +34,24 @@
                         </prototypes>
                     </tableView>
                     <toolbarItems>
-                        <barButtonItem title="Left In" id="8W5-dh-tbe" userLabel="动画1">
+                        <barButtonItem title="Left In" id="8W5-dh-tbe" userLabel="Left In">
                             <connections>
                                 <action selector="LeftIn:" destination="bYF-b3-rCO" id="0tO-bF-b5m"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem title="Right Out" id="U00-M9-Jsv" userLabel="动画2">
+                        <barButtonItem title="Right Out" id="U00-M9-Jsv" userLabel="Right Out">
                             <connections>
                                 <action selector="rightOut:" destination="bYF-b3-rCO" id="wFZ-4u-vcS"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem title="Down In" id="Fj3-1T-kTJ">
+                            <connections>
+                                <action selector="DownIn:" destination="bYF-b3-rCO" id="mxd-8V-T1l"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem title="Up Out" id="Nan-JM-vlG">
+                            <connections>
+                                <action selector="UpOut:" destination="bYF-b3-rCO" id="Je1-3k-Vrb"/>
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
