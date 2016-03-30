@@ -33,7 +33,12 @@ const CGLine CGLineZero = {.from = {0, 0}, .to = {0, 0}};
     CGLine line = CGLineZero;
 
     for (int i = 0; i < [array count]; i++) {
-        NSIndexPath *path = [array objectAtIndex:i];
+        NSUInteger index = i;
+        // the bigest cell is first to be moved when up to down
+        if (UITableViewWaveAnimationUpToDown == animation) {
+            index = [array count] - i - 1;
+        }
+        NSIndexPath *path = [array objectAtIndex:index];
         UITableViewCell *cell = [self cellForRowAtIndexPath:path];
         line = [self getAnimationLineWithOriginalPoint:cell.center Animation:animation inOut:inOut];
         cell.center = line.from;
