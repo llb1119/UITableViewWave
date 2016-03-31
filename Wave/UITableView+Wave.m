@@ -32,7 +32,7 @@ const CGLine CGLineZero = {.from = {0, 0}, .to = {0, 0}};
     NSArray *array = [self indexPathsForVisibleRows];
     CGLine line = CGLineZero;
 
-    for (int i = 0; i < [array count]; i++) {
+    for (NSUInteger i = 0; i < [array count]; i++) {
         NSUInteger index = i;
         // the bigest cell is first to be moved when up to down
         if (UITableViewWaveAnimationUpToDown == animation) {
